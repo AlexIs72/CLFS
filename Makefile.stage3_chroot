@@ -1,0 +1,4 @@
+include env.mk
+
+DIRS    = $(TOOLCHAIN_DIR) $(LOG_DIR) $(SRC_DIR) $(DL_DIR) $(BUILD_DIR) $(TOOLS_DIR)
+

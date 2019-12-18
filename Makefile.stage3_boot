@@ -1,0 +1,46 @@
+include env.mk
+
+STAGE   =   stage3_boot
+DIRS    = $(TOOLCHAIN_DIR) $(LOG_DIR) $(SRC_DIR) $(DL_DIR) $(BUILD_DIR) $(TOOLS_DIR)
+STAGE3  =   bc bootscripts e2fsprogs kmod shadow sysvinit eudev kernel grub
+
+export PATH=$(TOOLCHAIN_DIR2)/bin:/bin:/usr/bin
+
+all: $(DIRS) fake_root $(STAGE3) system_dirs ess_links
+
+$(STAGE3):
+	make -f scripts/$(STAGE)/Makefile.$@.mk 2>&1 | tee $(LOG_DIR)/$@_$(STAGE).build.log; \
+    test $${PIPESTATUS[0]} = 0
+
+fake_root:
+	[ -d $(TOOLCHAIN_DIR2) ] || (echo "No build root - $(TOOLCHAIN_DIR2)!"; exit 1)
+	[ -d $(TOOLS_DIR2) ] || (echo "No tools dir - $(TOOLS_DIR2)!"; exit 1)
+
+$(DIRS):
+	mkdir -p $@
+
+
+system_dirs:
+	mkdir -pv $(TOOLS_DIR2)/{bin,boot,dev,{etc/,}opt,home,lib/firmware,mnt}
+	mkdir -pv $(TOOLS_DIR2)/{proc,media/{floppy,cdrom},run/{,shm},sbin,srv,sys}
+	mkdir -pv $(TOOLS_DIR2)/var/{lock,log,mail,spool}
+	mkdir -pv $(TOOLS_DIR2)/var/{opt,cache,lib/{misc,locate},local}
+	install -dv -m 0750 $(TOOLS_DIR2)/root
+	install -dv -m 1777 $(TOOLS_DIR2){/var,}/tmp
+#	ln -sv ../run $(TOOLS_DIR2)/var/run || true
+	mkdir -pv $(TOOLS_DIR2)/usr/{,local/}{bin,include,lib,sbin,src}
+	mkdir -pv $(TOOLS_DIR2)/usr/{,local/}share/{doc,info,locale,man}
+	mkdir -pv $(TOOLS_DIR2)/usr/{,local/}share/{misc,terminfo,zoneinfo}
+	mkdir -pv $(TOOLS_DIR2)/usr/{,local/}share/man/man{1,2,3,4,5,6,7,8}
+
+ess_links:
+#	ln -sv $(TOOLS_DIR2)/bin/{bash,cat,echo,grep,login,pwd,stty} $(LFS)/bin || true
+#	ln -sv $(TOOLS_DIR2)/bin/file $(LFS)/usr/bin || true
+#	ln -sv $(TOOLS_DIR2)/lib/libgcc_s.so{,.1} $(LFS)/usr/lib || true
+#	ln -sv $(TOOLS_DIR2)/lib/libstdc++.so{.6,} $(LFS)/usr/lib || true
+#	sed -e 's$(TOOLS_DIR2)/usr/' $(TOOLS_DIR2)/lib/libstdc++.la > $(LFS)/usr/lib/libstdc++.la || true
+#	ln -sv bash $(LFS)/bin/sh || true
+#	ln -sv $(TOOLS_DIR2)/sbin/init $(LFS)/sbin || true
+#	ln -sv $(TOOLS_DIR2)/etc/{login.{access,defs},limits} $(LFS)/etc || true
+#	mkdir -pv $(LFS)/usr/lib64 && ln -sv $(TOOLS_DIR2)/lib/libstdc++.so{.6,} $(LFS)/usr/lib64  || true
+	ln -sv /proc/self/mounts $(TOOLS_DIR2)/etc/mtab  || true

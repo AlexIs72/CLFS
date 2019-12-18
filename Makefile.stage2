@@ -1,0 +1,43 @@
+include env.mk
+
+STAGE   =   stage2
+DIRS	= $(TOOLCHAIN_DIR) $(LOG_DIR) $(SRC_DIR) $(DL_DIR) $(BUILD_DIR) $(TOOLS_DIR)
+#STAGE1 	= binutils_pass1 gcc_pass1 kernel_headers glibc libstdc++ binutils_pass2 gcc_pass2 
+#STAGE1  += tcl expect dejagnu bash bison bzip2 coreutils diffutils file findutils gawk
+#STAGE1  += gettext grep gzip m4 make ncurses patch perl python sed tar texinfo xz
+STAGE2 = gmp mpfr mpc isl cloog zlib binutils gcc ncurses bash bzip2 check coreutils
+STAGE2 += diffutils file findutils gawk gettext 
+STAGE2 += libelf gperf grep gzip make patch sed tar texinfo util-linux vim xz 
+#STAGE1 += gcc_pass1 glibc gcc_pass2
+
+
+export PATH=$(TOOLCHAIN_DIR2)/bin:/bin:/usr/bin
+#export PATH=/$(TOOLS_DIR_NAME)/bin:/bin:/usr/bin
+
+all: $(DIRS) fake_root $(STAGE2) 
+#stripping
+
+test:
+	echo $$(MACHTYPE)
+	$(shell echo $${MACHTYPE} | sed -e 's/-[^-]*/-cross/')
+
+
+$(STAGE2):
+	make -f scripts/$(STAGE)/Makefile.$@.mk 2>&1 | tee $(LOG_DIR)/$@_$(STAGE).build.log; \
+	test $${PIPESTATUS[0]} = 0
+#	[ $${PIPESTATUS[0]} -eq 0 ] || exit 1
+
+#stripping:
+#	strip --strip-debug /$(TOOLCHAIN_DIR_NAME)/lib/* || true
+#	/usr/bin/strip --strip-unneeded /$(TOOLCHAIN_DIR_NAME)/{,s}bin/* || true
+#	rm -rf /$(TOOLCHAIN_DIR_NAME)/{,share}/{info,man,doc}
+#	find /$(TOOLCHAIN_DIR_NAME)/{lib,libexec} -name \*.la -delete
+
+fake_root:
+	[ -d $(TOOLCHAIN_DIR2) ] || (echo "No build root - $(TOOLCHAIN_DIR2)!"; exit 1)
+	[ -d $(TOOLS_DIR2) ] || (echo "No tools dir - $(TOOLS_DIR2)!"; exit 1)
+
+$(DIRS):
+	mkdir -p $@
+
+
