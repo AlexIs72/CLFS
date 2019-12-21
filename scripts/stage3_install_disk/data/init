@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -x
+
+mount -t devtmpfs none /dev
+mount -t proc /proc /proc
+mount -t sysfs none /sys
+
+#mknod -m 600 /dev/tty1 c 4 1
+#mknod -m 600 /dev/tty2 c 4 2
+#mknod -m 600 /dev/tty3 c 4 3
+#mknod -m 600 /dev/tty4 c 4 4
+
+sleep 5
+
+exec /sbin/init
+
+

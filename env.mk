@@ -1,7 +1,8 @@
 SHELL               =   /bin/bash
 PWD                 =   $(shell pwd)
 LFS                 =   $(PWD)/.output
-LFS_TARGET          =   x86_64-aaeon-linux-gnu
+LFS_ARCH            =   x86_64
+LFS_TARGET          =   $(LFS_ARCH)-aaeon-linux-gnu
 LFS_HOST            =   $(shell echo $${MACHTYPE} | sed -e 's/-[^-]*/-cross/')
 NUM_CPU             =   $(shell nproc --all)
 SYSTEM_NAME         =   $(shell uname -m)
@@ -17,6 +18,8 @@ LOG_DIR             =   $(LFS)/log
 SRC_DIR             =   $(LFS)/src
 DL_DIR              =   $(LFS)/dl
 BUILD_DIR           =   $(LFS)/build
+INSTALL_DISK_DIR    =   $(LFS)/install_disk
+#INITRD_STAGE_DIR    =   $(INITRD_DIR)/stage
 #TARGET = $(shell uname -m)
 
 MULTILIB            = no

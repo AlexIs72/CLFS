@@ -1,0 +1,29 @@
+include env.mk
+
+STAGE   =   stage3_install_disk
+#INITRD_DIR =   $(LFS)/initrd
+DIRS    = $(LOG_DIR) $(SRC_DIR) $(DL_DIR) $(BUILD_DIR) $(INSTALL_DISK_DIR)
+STAGE3_1  =   busybox kernel
+STAGE3_ROOT = initrd
+STAGE3_2  =   install_disk
+
+export PATH=$(TOOLCHAIN_DIR2)/bin:/bin:/usr/bin
+
+all: $(DIRS) $(STAGE3_1) $(STAGE3_ROOT) $(STAGE3_2)
+
+$(STAGE3_1) $(STAGE3_2):
+	make -f scripts/$(STAGE)/Makefile.$@.mk 2>&1 | tee $(LOG_DIR)/$@_$(STAGE).build.log; \
+	test $${PIPESTATUS[0]} = 0
+
+$(STAGE3_ROOT):
+	make -f scripts/$(STAGE)/Makefile.$@.mk 2>&1 | tee $(LOG_DIR)/$@_$(STAGE).build.log; \
+	test $${PIPESTATUS[0]} = 0
+
+
+#fake_root:
+#    [ -d $(TOOLCHAIN_DIR2) ] || (echo "No build root - $(TOOLCHAIN_DIR2)!"; exit 1)
+#    [ -d $(TOOLS_DIR2) ] || (echo "No tools dir - $(TOOLS_DIR2)!"; exit 1)
+
+$(DIRS):
+	mkdir -p $@
+

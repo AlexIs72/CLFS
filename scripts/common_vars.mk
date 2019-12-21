@@ -3,10 +3,10 @@ BUILD64         =   -m64
 PKG_FULL_NAME   =   $(PKG_NAME)-$(PKG_VERSION)
 PKG_ARCHIVE     =   $(PKG_FULL_NAME).tar.gz
 PKG_URL         =   https://ftp.gnu.org/gnu/$(PKG_NAME)/$(PKG_ARCHIVE)
-KERNEL_NAME     =   linux
-KERNEL_VERSION  =   4.19.86
-KERNEL_ARCHIVE  =   $(KERNEL_NAME)-$(KERNEL_VERSION).tar.xz
-KERNEL_URL      =   https://cdn.kernel.org/pub/linux/kernel/v4.x/$(KERNEL_ARCHIVE)
+#KERNEL_NAME     =   linux
+#KERNEL_VERSION  =   4.19.86
+#KERNEL_ARCHIVE  =   $(KERNEL_NAME)-$(KERNEL_VERSION).tar.xz
+#KERNEL_URL      =   https://cdn.kernel.org/pub/linux/kernel/v4.x/$(KERNEL_ARCHIVE)
 
 #PKG_URL         =   https://ftp.gnu.org/gnu/$(PKG_NAME)/$(PKG_FULL_NAME)/$(PKG_ARCHIVE)
 #                    https://ftp.gnu.org/gnu/gcc/gcc-7.3.0/
